@@ -23,7 +23,7 @@ app.get('/weather', weatherHandler);
 
 
 app.get('*', (request, response) => {
-  response.status(404).send('Sorry, this is unavailable');
+  response.status(404).send('Oops, temporarily unavailable');
 });
 
 
@@ -42,7 +42,7 @@ function locationHandler(request, response) {
   }
   catch(error){
     //some function or error message
-    errorHandler('So sorry, there is an issue', request, response);
+    errorHandler('Sorry, there is an issue', request, response);
   }
 }
 
