@@ -23,7 +23,7 @@ app.get('/weather', weatherHandler);
 
 
 app.get('*', (request, response) => {
-  response.status(404).send('This route does not exist');
+  response.status(404).send('Sorry, this is unavailable');
 });
 
 
@@ -42,7 +42,7 @@ function locationHandler(request, response) {
   }
   catch(error){
     //some function or error message
-    errorHandler('So sorry, something went wrong', request, response);
+    errorHandler('So sorry, there is an issue', request, response);
   }
 }
 
@@ -57,7 +57,7 @@ function weatherHandler(request, response){
       response.status(200).send(weatherSummaries);
     })
     .catch( () => {
-      errorHandler('Something went wrong', request, response);
+      errorHandler('There is an issue', request, response);
     });
 }
 
