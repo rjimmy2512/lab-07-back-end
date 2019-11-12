@@ -19,16 +19,17 @@ app.use(cors());
 //API routes
 app.get('/location', locationHandler);
 app.get('/weather', weatherHandler);
+app.get('/trails', getTrails);
 //app.get('/events', eventHandler);
 
 
 app.get('*', (request, response) => {
-  response.status(404).send('This route does not exist');
+  response.status(404).send('Oops, temporarily unavailable');
 });
 
 
 
-//Helper Funcitons
+//Helper Functions
 
 function locationHandler(request, response) {
   try{
@@ -42,7 +43,7 @@ function locationHandler(request, response) {
   }
   catch(error){
     //some function or error message
-    errorHandler('So sorry, something went wrong', request, response);
+    errorHandler('Sorry, there is an issue', request, response);
   }
 }
 
@@ -57,27 +58,24 @@ function weatherHandler(request, response){
       response.status(200).send(weatherSummaries);
     })
     .catch( () => {
-      errorHandler('Something went wrong', request, response);
+      errorHandler('There is an issue', request, response);
     });
 }
 
-
-
-//Events Function
-
-
-// var request = require("request");
-
-// var options = { method: 'GET',
-//   url: 'https://www.eventbriteapi.com/v3/events/49216045517/',
-//   headers:
-//    { Authorization: 'Bearer PERSONAL_X6UYJA5ZDVUM3UJIWGCJ' } };
-
-// request(options, function (error, response, body) {
-//   if (error) throw new Error(error);
-//   console.log(body);
-// });
-
+function getTrails(request, response){
+  const url = `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.HIKING_API_KEY}`;
+  superagent.get(url)
+    .then(dataset =>{
+      console.log(dataset);
+      const trailsData = dataset.body.trails.map(trails =>{
+        return new Trail(trails);
+      });
+      response.status(200).send(trailsData);
+    })
+    .catch( ()=> {
+      errorHandler('Something went wrong', request, response);
+    });
+}
 
 
 function errorHandler(error, request, response) {
@@ -96,6 +94,20 @@ function Weather(day){
   this.forecast = day.summary;
   this.time = new Date(day.time * 1000).toString().slice(0,15);
 }
+
+function Trail(traildata){
+  this.name = traildata.name;
+  this.location = traildata.location;
+  this.length = traildata.length;
+  this.stars = traildata.stars;
+  this.star_votes = traildata.starVotes;
+  this.summary = traildata.summary;
+  this.trails_url = traildata.url;
+  this.conditions = traildata.conditionStatus;
+  this.condition_date = traildata.conditionDate.toString().slice(0,10);
+  this.condition_time = traildata.conditionDate.toString().slice(11,19);
+}
+
 
 //Ensure the server is listening for requests
 // THIS MUST BE AT THE BOTTOM OF THE FILE!!!!
