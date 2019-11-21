@@ -63,7 +63,7 @@ function weatherHandler(request, response){
 }
 
 function getTrails(request, response){
-  const url = `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.HIKING_API_KEY}`;
+  const url = `https://www.hikingproject.com/data/get-trails?lat=${request.query.data.latitude}&lon=${request.query.data.longitude}&key=${process.env.TRAILS_API_KEY}`;
   superagent.get(url)
     .then(dataset =>{
       console.log(dataset);
@@ -107,7 +107,6 @@ function Trail(traildata){
   this.condition_date = traildata.conditionDate.toString().slice(0,10);
   this.condition_time = traildata.conditionDate.toString().slice(11,19);
 }
-
 
 //Ensure the server is listening for requests
 // THIS MUST BE AT THE BOTTOM OF THE FILE!!!!
